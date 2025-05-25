@@ -3,6 +3,13 @@
 #include "MyVector.hpp"
 #include "Message.h"
 
+enum class UserRole
+{
+	Admin = 0,
+	Student = 1,
+	Teacher = 2
+};
+
 class User
 {
 	MyString firstName;
@@ -12,14 +19,15 @@ class User
 	MyString password;
 	MyVector<Message> messages;
 public:
-    User(int id, MyString pass, MyString fName, MyString lName);
+	User(const MyString& firstName, const MyString& lastName, int id, const MyString& password);
     virtual ~User() {}
     int getId() const;
-    MyString getFullName() const;
-    void receiveMessage(const Message& msg);
-    void viewInbox();
-    void deleteMessage(int index);
+    const MyString getFullName() const;
 
-    virtual MyString getRole() const = 0;
+    void receiveMessage(const Message& msg);
+    void clearMailBox();
+
+    virtual const UserRole getRole() const = 0;
+    virtual User* clone() const = 0;
 };
 
