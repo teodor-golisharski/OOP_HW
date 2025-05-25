@@ -129,6 +129,10 @@
   <ItemGroup>
     <ClCompile Include="OOP_HW.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyVector.hpp" />
+    <ClInclude Include="OutputMessages.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
