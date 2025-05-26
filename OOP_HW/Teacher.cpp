@@ -11,11 +11,16 @@ void Teacher::createCourse(const MyString& courseName)
 
 void Teacher::addAssignmentToCourse(const MyString& courseName, const Assignment& assignment)
 {
+
 }
 
-void Teacher::gradeSubmission(Course* course, Student* student, const MyString& assignmentName, int grade)
+void Teacher::gradeSubmission(Course* course, Student* student, const MyString& assignmentName, double grade)
 {
+    // checks required
 
+    Assignment* temp = course->findAssignment(assignmentName);
+
+    temp->findSubmission(student->getId()).setGrade(this, grade);
 }
 
 const UserRole Teacher::getRole() const
@@ -25,5 +30,5 @@ const UserRole Teacher::getRole() const
 
 User* Teacher::clone() const
 {
-    return new Teacher(*this) ;
+    return new Teacher(*this);
 }

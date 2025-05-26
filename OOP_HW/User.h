@@ -5,9 +5,10 @@
 
 enum class UserRole
 {
-	Admin = 0,
-	Student = 1,
-	Teacher = 2
+	Default = 0,
+	Admin = 1,
+	Student = 2,
+	Teacher = 3
 };
 
 class User
@@ -17,8 +18,9 @@ class User
 	int id;
 
 	MyString password;
-	MyVector<Message> messages;
+	MyVector<Message*> messages;
 public:
+	User();
 	User(const MyString& firstName, const MyString& lastName, int id, const MyString& password);
     virtual ~User() {}
     int getId() const;
@@ -29,5 +31,7 @@ public:
 
     virtual const UserRole getRole() const = 0;
     virtual User* clone() const = 0;
+
+	virtual ~User() = default;
 };
 

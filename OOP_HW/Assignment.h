@@ -5,10 +5,12 @@
 
 class Assignment
 {
+	int courseID;
 	MyString title;
 	MyVector<Submission> submissions;
 
 public:
+	Assignment(int courseID, const MyString& title);
 	Submission& findSubmission(int studentId);
 };
 

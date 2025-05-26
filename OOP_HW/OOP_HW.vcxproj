@@ -127,24 +127,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Admin.cpp" />
     <ClCompile Include="Assignment.cpp" />
     <ClCompile Include="Course.cpp" />
+    <ClCompile Include="DataHandler.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="OOP_HW.cpp" />
     <ClCompile Include="Student.cpp" />
     <ClCompile Include="Submission.cpp" />
+    <ClCompile Include="SystemEngine.cpp" />
+    <ClCompile Include="SystemManager.cpp" />
     <ClCompile Include="Teacher.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Admin.h" />
+    <ClInclude Include="ApplicationConstants.h" />
     <ClInclude Include="Assignment.h" />
     <ClInclude Include="Course.h" />
+    <ClInclude Include="DataHandler.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MyString.hpp" />
     <ClInclude Include="MyVector.hpp" />
     <ClInclude Include="OutputMessages.h" />
     <ClInclude Include="Student.h" />
     <ClInclude Include="Submission.h" />
+    <ClInclude Include="SystemEngine.h" />
+    <ClInclude Include="SystemManager.h" />
     <ClInclude Include="Teacher.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>

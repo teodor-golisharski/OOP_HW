@@ -30,9 +30,9 @@ public:
 
 	T& get(unsigned index) const;
 	void pop();
-	void delete_at(unsigned index);
+	void deleteAt(unsigned index);
 	int size() const;
-	int get_capacity() const;
+	int getCapacity() const;
 	void clear();
 
 	T& operator[](unsigned index);
@@ -119,7 +119,7 @@ void MyVector<T>::copyFrom(const MyVector& other)
 }
 
 template<class T>
-void MyVector<T>::delete_at(unsigned index)
+void MyVector<T>::deleteAt(unsigned index)
 {
 	if (index >= current)
 	{
@@ -216,7 +216,7 @@ int MyVector<T>::size() const
 }
 
 template<class T>
-int MyVector<T>::get_capacity() const
+int MyVector<T>::getCapacity() const
 {
 	return capacity;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "OutputMessages.h"
+#include "MyVector.hpp"
 
 class MyString
 {
@@ -24,6 +25,9 @@ public:
 
     size_t length() const;
     MyString& operator+=(const MyString& other);
+    MyVector<MyString> split(char delimiter) const;
+    int toInt() const;
+    double toDouble() const;
 
     MyString substr(size_t begin, size_t howMany) const;
 
@@ -139,6 +143,90 @@ inline MyString& MyString::operator+=(const MyString& other)
     data = newData;
     len = newLength;
     return *this;
+}
+
+MyVector<MyString> MyString::split(char delimiter) const
+{
+    MyVector<MyString> tokens;
+    size_t start = 0;
+    size_t len = length();
+
+    for (size_t i = 0; i <= len; ++i)
+    {
+        if (i == len || data[i] == delimiter)
+        {
+            size_t tokenLen = i - start;
+            if (tokenLen > 0)
+            {
+                tokens.push(substr(start, tokenLen));
+            }
+            start = i + 1;
+        }
+    }
+
+    return tokens;
+}
+
+int MyString::toInt() const
+{
+    int result = 0;
+    bool isNegative = false;
+    size_t i = 0;
+
+    if (data[0] == '-')
+    {
+        isNegative = true;
+        i++;
+    }
+
+    while (data[i] >= '0' && data[i] <= '9')
+    {
+        result = result * 10 + (data[i] - '0');
+        i++;
+    }
+
+    return isNegative ? -result : result;
+}
+
+double MyString::toDouble() const
+{
+    double result = 0.0;
+    double fraction = 0.0;
+    bool isNegative = false;
+    bool inFraction = false;
+    double divisor = 10.0;
+
+    size_t i = 0;
+    if (data[0] == '-')
+    {
+        isNegative = true;
+        i++;
+    }
+
+    for (; data[i] != '\0'; i++)
+    {
+        if (data[i] == '.')
+        {
+            inFraction = true;
+            continue;
+        }
+
+        if (data[i] >= '0' && data[i] <= '9')
+        {
+            if (inFraction)
+            {
+                fraction += (data[i] - '0') / divisor;
+                divisor *= 10.0;
+            }
+            else
+            {
+                result = result * 10 + (data[i] - '0');
+            }
+        }
+        else break;
+    }
+
+    return isNegative ? -(result + fraction) : (result + fraction);
 }
 
 inline MyString MyString::substr(size_t begin, size_t howMany) const

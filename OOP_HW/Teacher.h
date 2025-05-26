@@ -15,7 +15,7 @@ public:
 
     void createCourse(const MyString& courseName);
     void addAssignmentToCourse(const MyString& courseName, const Assignment& assignment);
-    void gradeSubmission(Course* course, Student* student, const MyString& assignmentName, int grade);
+    void gradeSubmission(Course* course, Student* student, const MyString& assignmentName, double grade);
 
     // const MyVector<Course*>& getTeachingCourses() const;
 

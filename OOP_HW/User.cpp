@@ -1,5 +1,7 @@
 #include "User.h"
 
+User::User() = default;
+
 User::User(const MyString& firstName, const MyString& lastName, int id, const MyString& password)
 {
 	this->firstName = firstName;
@@ -20,10 +22,13 @@ const MyString User::getFullName() const
 
 void User::receiveMessage(const Message& msg)
 {
-	messages.push(msg);
+	// messages.push(msg);
 }
 
 void User::clearMailBox()
 {
-	messages.clear();
+	for (size_t i = 0; i < messages.getCapacity(); i++)
+	{
+		messages[i]->deleteMessage();
+	}
 }
