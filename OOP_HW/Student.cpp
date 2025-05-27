@@ -1,8 +1,9 @@
 #include "Student.h"
 
-const UserRole Student::getRole() const
+Student::Student(int id, const MyString& firstName, const MyString& lastName, const MyString& password) 
+	: User(id, firstName, lastName, password) 
 {
-	return UserRole::Student;
+	this->role = UserRole::Student;
 }
 
 User* Student::clone() const

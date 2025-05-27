@@ -24,16 +24,33 @@ bool SystemManager::isLoggedIn() const
     return loggedUser != nullptr;
 }
 
+void SystemManager::login(int id, const MyString& password)
+{
+}
+
+void SystemManager::logout()
+{
+}
+
+bool SystemManager::exit()
+{
+	return false;
+}
+
+void SystemManager::help()
+{
+}
+
 void SystemManager::loadData()
 {
-	DataHandler::loadCourses(courses);    
+	DataHandler::loadCourses(courses, users);    
 	DataHandler::loadAssignments(courses);
 	DataHandler::loadUsers(users);        
-	DataHandler::loadSubmissions(courses, users); 
+	DataHandler::loadSubmissions(courses); 
 	DataHandler::loadMessages(allMessages);
 }
 
-void SystemManager::saveData()
+void SystemManager::saveData() const
 {
 	DataHandler::saveUsers(users);
 	DataHandler::saveCourses(courses);
@@ -49,6 +66,6 @@ bool SystemManager::hasRole(UserRole requiredRole) const
 
 SystemManager::~SystemManager()
 {
-	// saveData();
+	saveData();
 	free();
 }

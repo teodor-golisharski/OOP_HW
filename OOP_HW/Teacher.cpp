@@ -1,12 +1,14 @@
 #include "Teacher.h"
 
-Teacher::Teacher(const MyString& firstName, const MyString& lastName, int id, const MyString& password) 
-	: User(firstName, lastName, id, password)
+Teacher::Teacher(int id, const MyString& firstName, const MyString& lastName, const MyString& password)
+	: User(id, firstName, lastName, password)
 {
+	role = UserRole::Teacher;
 }
 
 void Teacher::createCourse(const MyString& courseName)
 {
+
 }
 
 void Teacher::addAssignmentToCourse(const MyString& courseName, const Assignment& assignment)
@@ -14,21 +16,7 @@ void Teacher::addAssignmentToCourse(const MyString& courseName, const Assignment
 
 }
 
-void Teacher::gradeSubmission(Course* course, Student* student, const MyString& assignmentName, double grade)
-{
-    // checks required
-
-    Assignment* temp = course->findAssignment(assignmentName);
-
-    temp->findSubmission(student->getId()).setGrade(this, grade);
-}
-
-const UserRole Teacher::getRole() const
-{
-    return UserRole::Teacher;
-}
-
 User* Teacher::clone() const
 {
-    return new Teacher(*this);
+	return new Teacher(*this);
 }

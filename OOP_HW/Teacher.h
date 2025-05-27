@@ -1,25 +1,20 @@
 #pragma once
 #include "User.h"
-#include "Assignment.h"
-#include "Course.h"
 #include "MyString.hpp"
 #include "MyVector.hpp"
+#include "Assignment.h"
 
 class Teacher : public User
 {
 private:
-	MyVector<Course*> teachingCourses;
+	MyVector<int> teachingCoursesIds;
 
 public:
-    Teacher(const MyString& firstName, const MyString& lastName, int id, const MyString& password);
+    Teacher(int id, const MyString& firstName, const MyString& lastName, const MyString& password);
 
     void createCourse(const MyString& courseName);
     void addAssignmentToCourse(const MyString& courseName, const Assignment& assignment);
-    void gradeSubmission(Course* course, Student* student, const MyString& assignmentName, double grade);
 
-    // const MyVector<Course*>& getTeachingCourses() const;
-
-    virtual const UserRole getRole() const override;
     virtual User* clone() const override;
 };
 

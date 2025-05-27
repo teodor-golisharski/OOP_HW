@@ -1,13 +1,9 @@
 #include "Admin.h"
 
-Admin::Admin()
+Admin::Admin(int id, const MyString& firstName, const MyString& lastName, const MyString& password)
+    :User(id, firstName, lastName, password)
 {
-    std::cout << "";
-}
-
-const UserRole Admin::getRole() const
-{
-    return UserRole::Admin;
+    this->role = UserRole::Admin;
 }
 
 User* Admin::clone() const

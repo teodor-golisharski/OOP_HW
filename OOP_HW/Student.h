@@ -1,13 +1,12 @@
 #pragma once
 #include "User.h"
-#include "Course.h"
 
 class Student : public User
 {
-	MyVector<Course*> enrolledCourses;
+	MyVector<int> enrolledCoursesIds;
 
 public:
-	virtual const UserRole getRole() const override;
+	Student(int id, const MyString& firstName, const MyString& lastName, const MyString& password);
 	virtual User* clone() const override;
 };
 

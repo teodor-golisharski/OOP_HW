@@ -1,25 +1,27 @@
 #pragma once
-#include "Student.h"
-#include "DataHandler.h"
+#include "MyString.hpp"
+#include "MyVector.hpp"
 
 class Submission
 {
-	Student* student;
+	int studentId;
 	MyString solution;
 	double grade;
+	int assignmentId;
 
 	void checkGrade(double grade) const;
-	void internalSetGrade(double grade);
+
+	void setGrade(double grade);
 
 	friend class DataHandler;
 
 public:
-	Submission(Student* student, const MyString& solution);
+	Submission();
+	Submission(int studentId, const MyString& solution, int assignmentId);
+
 	int getStudentId() const;
 	double getGrade() const;
 	const MyString& getSolution() const; 
-	
-	void setGrade(User* t, double grade);
-
+	int getAssignmentId() const;
 };
 

@@ -7,4 +7,10 @@ namespace FileNames
 	static const char* USERS = "users.txt";
 	static const char* SUBMISSIONS = "submissions.txt";
 	static const char* ASSIGNMENTS = "assignments.txt";
+	static const char* ID_GENERATOR = "ids.txt";
+}
+
+namespace GeneralConstants
+{
+	static const char DELIMETER = '|';
 }

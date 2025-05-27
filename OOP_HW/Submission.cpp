@@ -8,25 +8,27 @@ void Submission::checkGrade(double grade) const
 		throw std::invalid_argument(ErrorMessages::INVALID_GRADE);
 	}
 }
-void Submission::internalSetGrade(double grade)
+void Submission::setGrade(double grade)
 {
 	checkGrade(grade);
 	this->grade = grade;
 }
 
-Submission::Submission(Student* student, const MyString& solution)
+Submission::Submission() : studentId(-1), solution(""), assignmentId(-1), grade(0)
 {
-	if (!student)
-	{
-		throw std::invalid_argument(ErrorMessages::INVALID_STUDENT);
-	}
-	this->student = student;
+}
+
+Submission::Submission(int studentId, const MyString& solution, int assignmentId)
+{
+	this->studentId = studentId;
 	this->solution = solution;
+	this->assignmentId = assignmentId;
+	this->grade = 0;
 }
 
 int Submission::getStudentId() const
 {
-	return student->getId();
+	return studentId;
 }
 double Submission::getGrade() const
 {
@@ -37,11 +39,8 @@ const MyString& Submission::getSolution() const
 	return this->solution;
 }
 
-void Submission::setGrade(User* t, double grade)
+int Submission::getAssignmentId() const
 {
-	if (t->getRole() != UserRole::Teacher)
-	{
-		throw std::runtime_error(ErrorMessages::ACCESS_DENIED_TEACHER_REQUIREMENT);
-	}
-	internalSetGrade(grade);
+	return this->assignmentId;
 }
+

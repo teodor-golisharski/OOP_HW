@@ -1,13 +1,13 @@
 #include "User.h"
 
-User::User() = default;
 
-User::User(const MyString& firstName, const MyString& lastName, int id, const MyString& password)
+User::User(int id, const MyString& firstName, const MyString& lastName, const MyString& password)
 {
+	this->id = id;
 	this->firstName = firstName;
 	this->lastName = lastName;
-	this->id = id;
 	this->password = password;
+	this->role = UserRole::Default;
 }
 
 int User::getId() const
@@ -15,9 +15,24 @@ int User::getId() const
 	return this->id;
 }
 
-const MyString User::getFullName() const
+const MyString& User::getFirstName() const
 {
-	return firstName + " " + lastName;
+	return this->firstName;
+}
+
+const MyString& User::getLastName() const
+{
+	return this->lastName;
+}
+
+const MyString& User::getPassword() const
+{
+	return this->password;
+}
+
+UserRole User::getRole() const
+{
+	return this->role;
 }
 
 void User::receiveMessage(const Message& msg)

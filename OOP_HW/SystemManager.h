@@ -1,11 +1,12 @@
 #pragma once
-#include "OutputMessages.h"
-#include "User.h"
 #include "MyVector.hpp";
 #include "MyString.hpp";
-#include "Course.h";
+#include "OutputMessages.h"
+#include "DataHandler.h"
 #include "User.h"
+#include "Course.h";
 #include "Message.h"
+#include "IdGenerator.h"
 
 class SystemManager
 {
@@ -15,6 +16,8 @@ private:
 	MyVector<Message> allMessages;
 
 	User* loggedUser = nullptr;
+
+	IdGenerator idGen;
 
 	void free();
 	void loadAdmin();
@@ -28,7 +31,7 @@ public:
 
 	void help();
 	void loadData();
-	void saveData();
+	void saveData() const;
 
 	bool hasRole(UserRole requiredRole) const;
 

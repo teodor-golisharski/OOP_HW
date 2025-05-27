@@ -1,6 +1,10 @@
 #include "Message.h"
 #pragma warning (disable : 4996)
 
+Message::Message() : isDeleted(false), senderId(-1), recipientId(-1), content(""), timestamp("")
+{
+}
+
 MyString Message::getCurrentTime()
 {
 	time_t now = time(0);
@@ -15,8 +19,8 @@ MyString Message::getCurrentTime()
 Message::Message(int senderID, int recipientID, const MyString& content)
 {
 	this->isDeleted = false;
-	this->senderID = senderID;
-	this->recipientID = recipientID;
+	this->senderId = senderID;
+	this->recipientId = recipientID;
 	this->content = content;
 	this->timestamp = getCurrentTime();
 }
@@ -32,12 +36,12 @@ const MyString& Message::getTimeStamp() const
 
 int Message::getSenderID() const
 {
-	return this->senderID;
+	return this->senderId;
 }
 
 int Message::getRecipientID() const
 {
-	return this->recipientID;
+	return this->recipientId;
 }
 
 bool Message::getIsDeleted() const

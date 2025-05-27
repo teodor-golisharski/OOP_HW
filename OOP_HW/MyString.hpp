@@ -145,7 +145,7 @@ inline MyString& MyString::operator+=(const MyString& other)
     return *this;
 }
 
-MyVector<MyString> MyString::split(char delimiter) const
+inline MyVector<MyString> MyString::split(char delimiter) const
 {
     MyVector<MyString> tokens;
     size_t start = 0;
@@ -167,7 +167,7 @@ MyVector<MyString> MyString::split(char delimiter) const
     return tokens;
 }
 
-int MyString::toInt() const
+inline int MyString::toInt() const
 {
     int result = 0;
     bool isNegative = false;
@@ -188,7 +188,7 @@ int MyString::toInt() const
     return isNegative ? -result : result;
 }
 
-double MyString::toDouble() const
+inline double MyString::toDouble() const
 {
     double result = 0.0;
     double fraction = 0.0;

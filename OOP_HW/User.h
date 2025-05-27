@@ -18,19 +18,25 @@ class User
 	int id;
 
 	MyString password;
+
 	MyVector<Message*> messages;
+
+protected:
+	UserRole role;
+
 public:
-	User();
-	User(const MyString& firstName, const MyString& lastName, int id, const MyString& password);
-    virtual ~User() {}
-    int getId() const;
-    const MyString getFullName() const;
+	User(int id, const MyString& firstName, const MyString& lastName, const MyString& password);
+	int getId() const;
 
-    void receiveMessage(const Message& msg);
-    void clearMailBox();
+	const MyString& getFirstName() const;
+	const MyString& getLastName() const;
+	const MyString& getPassword() const;
 
-    virtual const UserRole getRole() const = 0;
-    virtual User* clone() const = 0;
+	void receiveMessage(const Message& msg);
+	void clearMailBox();
+
+	UserRole getRole() const;
+	virtual User* clone() const = 0;
 
 	virtual ~User() = default;
 };

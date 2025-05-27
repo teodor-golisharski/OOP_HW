@@ -131,6 +131,7 @@
     <ClCompile Include="Assignment.cpp" />
     <ClCompile Include="Course.cpp" />
     <ClCompile Include="DataHandler.cpp" />
+    <ClCompile Include="IdGenerator.cpp" />
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="OOP_HW.cpp" />
     <ClCompile Include="Student.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Assignment.h" />
     <ClInclude Include="Course.h" />
     <ClInclude Include="DataHandler.h" />
+    <ClInclude Include="IdGenerator.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MyString.hpp" />
     <ClInclude Include="MyVector.hpp" />

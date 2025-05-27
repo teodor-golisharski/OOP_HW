@@ -4,8 +4,8 @@
 class Message
 {
 private:
-    int senderID;
-    int recipientID;
+    int senderId;
+    int recipientId;
     MyString content;
     MyString timestamp; 
     bool isDeleted;
@@ -13,6 +13,7 @@ private:
     MyString getCurrentTime();
 
 public:
+    Message();
     Message(int senderID, int recipientID, const MyString& content);
     
     const MyString& getContent() const;
