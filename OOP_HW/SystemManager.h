@@ -15,7 +15,7 @@ private:
 	MyVector<User*> users;
 	MyVector<Message> allMessages;
 
-	User* loggedUser = nullptr;
+	User* currentUser = nullptr;
 
 	IdGenerator idGen;
 
@@ -29,7 +29,7 @@ public:
 	void logout();
 	bool exit();
 
-	void help();
+	void help() const;
 	void loadData();
 	void saveData() const;
 

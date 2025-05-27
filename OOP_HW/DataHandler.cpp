@@ -49,7 +49,14 @@ void DataHandler::loadCourses(MyVector<Course>& courses, const MyVector<User*>& 
 void DataHandler::loadUsers(MyVector<User*>& users)
 {
 	std::ifstream in(FileNames::USERS);
-	if (!in.is_open()) return;
+	bool adminExists = false;
+	
+	if (!in.is_open())
+	{
+		users.push(new Admin(0, "System", "Admin", "00000"));
+		saveUsers(users); 
+		return;
+	}
 
 	char buffer[1024];
 	while (in.getline(buffer, 1024))
@@ -78,16 +85,20 @@ void DataHandler::loadUsers(MyVector<User*>& users)
 				user = new Admin(id, firstName, lastName, password);
 				break;
 			default:
-				continue; // or log error
+				throw std::runtime_error(ErrorMessages::USER_NOT_FOUND);
 		}
 
 		users.push(user);
 	}
 
 	in.close();
-}
 
-// Done
+	if (!adminExists)
+	{
+		users.push(new Admin(0, "System", "Admin", "0000"));
+		saveUsers(users);
+	}
+}
 void DataHandler::loadMessages(MyVector<Message>& messages)
 {
 	std::ifstream in(FileNames::MESSAGES);
@@ -188,7 +199,6 @@ void DataHandler::loadSubmissions(MyVector<Course>& courses)
 	}
 	in.close();
 }
-
 
 
 void DataHandler::saveCourses(const MyVector<Course>& courses)
