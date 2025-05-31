@@ -10,3 +10,8 @@ User* Admin::clone() const
 {
     return new Admin(*this);
 }
+
+const MyString& Admin::getRoleString() const
+{
+    return "Admin";
+}

@@ -45,9 +45,17 @@ void SystemEngine::run()
 
 			}
 		}
-		catch (const std::exception&)
+		catch (const std::invalid_argument& er)
 		{
-
+			std::cout << er.what() << std::endl;
+		}
+		catch (const std::runtime_error& er)
+		{
+			std::cout << er.what() << std::endl;
+		}
+		catch (const std::exception& er)
+		{
+			std::cout << er.what() << std::endl;
 		}
 	}
 }

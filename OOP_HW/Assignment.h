@@ -12,6 +12,7 @@ class Assignment
 
 	const MyVector<Submission>& getSubmissions() const;
 
+	friend class SystemManager;
 	friend class DataHandler;
 public:
 	Assignment();

@@ -6,17 +6,12 @@ Teacher::Teacher(int id, const MyString& firstName, const MyString& lastName, co
 	role = UserRole::Teacher;
 }
 
-void Teacher::createCourse(const MyString& courseName)
-{
-
-}
-
-void Teacher::addAssignmentToCourse(const MyString& courseName, const Assignment& assignment)
-{
-
-}
-
 User* Teacher::clone() const
 {
 	return new Teacher(*this);
+}
+
+const MyString& Teacher::getRoleString() const
+{
+	return "Teacher";
 }

@@ -5,7 +5,7 @@ Message::Message() : isDeleted(false), senderId(-1), recipientId(-1), content(""
 {
 }
 
-MyString Message::getCurrentTime()
+const MyString& Message::getCurrentTime()
 {
 	time_t now = time(0);
 	tm* localTime = localtime(&now);

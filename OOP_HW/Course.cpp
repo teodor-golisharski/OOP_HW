@@ -1,19 +1,29 @@
 #include "Course.h"
+#include "Utilities.h"
 
 void Course::addAssignment(const Assignment& a)
 {
 	assignments.push(a);
 }
 
-Course::Course()
+void Course::addStudent(Student* user)
 {
+    students.push(user);
 }
 
 Course::Course(int id, const MyString& name, Teacher* teacher, const MyString& enrollmentPassword)
 {
     this->id = id;
+    if (!validateName(name))
+    {
+        throw std::invalid_argument(InformativeMessages::NAMING_RULES);
+    }
     this->name = name;
     this->teacher = teacher;
+    if (!validateString(enrollmentPassword))
+    {
+        throw std::invalid_argument(InformativeMessages::PASSWORD_RULES);
+    }
     this->enrollmentPassword = enrollmentPassword;
 }
 
@@ -43,6 +53,16 @@ Assignment* Course::findAssignmentById(int id)
     for (size_t i = 0; i < assignments.size(); ++i)
     {
         if (assignments[i].getId() == id)
+            return &assignments[i];
+    }
+    return nullptr;
+}
+
+Assignment* Course::findAssignmentByName(const MyString& name)
+{
+    for (size_t i = 0; i < assignments.size(); ++i)
+    {
+        if (assignments[i].getTtile() == name)
             return &assignments[i];
     }
     return nullptr;

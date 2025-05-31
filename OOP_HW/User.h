@@ -2,6 +2,7 @@
 #include "MyString.hpp"
 #include "MyVector.hpp"
 #include "Message.h"
+#include "Utilities.h"
 
 enum class UserRole
 {
@@ -18,9 +19,11 @@ class User
 	int id;
 
 	MyString password;
-
 	MyVector<Message*> messages;
 
+	void changePassword(const MyString& oldPass, const MyString& pass);
+
+	friend class SystemManager;
 protected:
 	UserRole role;
 
@@ -36,6 +39,8 @@ public:
 	void clearMailBox();
 
 	UserRole getRole() const;
+	virtual const MyString& getRoleString() const;
+
 	virtual User* clone() const = 0;
 
 	virtual ~User() = default;

@@ -16,11 +16,13 @@ private:
     MyVector<Assignment> assignments;
 
     void addAssignment(const Assignment& a);
+    void addStudent(Student* user);
 
     friend class DataHandler;
+    friend class SystemManager;
 
 public:
-    Course();
+    Course() = default;
     Course(int id, const MyString& name, Teacher* teacher, const MyString& enrollmentPassword);
 
     int getId() const;
@@ -30,5 +32,6 @@ public:
     Teacher* getTeacher() const;
 
     Assignment* findAssignmentById(int id);
+    Assignment* findAssignmentByName(const MyString& name);
     const MyVector<Assignment>& getAssignments() const;
 };

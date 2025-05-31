@@ -1,11 +1,12 @@
 #include "Assignment.h"
 #include "OutputMessages.h"
+#include "Utilities.h"
 
 Assignment::Assignment() : title(""), id(-1), courseId(-1) {}
 
 Assignment::Assignment(int id, int courseID, const MyString& title)
 {
-    if (title.length() == 0)
+    if (!validateString(title))
     {
         throw std::invalid_argument(ErrorMessages::EMPTY_ASSIGNMENT_TITLE);
     }
@@ -50,3 +51,4 @@ void Assignment::addSubmission(const Submission& sub)
 {
     this->submissions.push(sub);
 }
+

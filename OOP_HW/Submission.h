@@ -8,13 +8,14 @@ class Submission
 	MyString solution;
 	double grade;
 	int assignmentId;
+	MyString comment;
 
 	void checkGrade(double grade) const;
-
 	void setGrade(double grade);
+	void setComment(const MyString& comment);
 
 	friend class DataHandler;
-
+	friend class SystemManager;
 public:
 	Submission();
 	Submission(int studentId, const MyString& solution, int assignmentId);

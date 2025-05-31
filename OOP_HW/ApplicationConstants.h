@@ -13,4 +13,5 @@ namespace FileNames
 namespace GeneralConstants
 {
 	static const char DELIMETER = '|';
+	static int NAME_MIN_LENGTH = 2;
 }

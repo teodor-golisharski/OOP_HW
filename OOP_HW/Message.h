@@ -10,7 +10,7 @@ private:
     MyString timestamp; 
     bool isDeleted;
 
-    MyString getCurrentTime();
+    const MyString& getCurrentTime();
 
 public:
     Message();

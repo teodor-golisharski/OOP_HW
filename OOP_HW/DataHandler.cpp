@@ -1,17 +1,13 @@
 #pragma once
 #include <iostream>
 #include <fstream>
-
 #include "DataHandler.h"
 #include "ApplicationConstants.h"
 
 void DataHandler::loadCourses(MyVector<Course>& courses, const MyVector<User*>& users)
 {
 	std::ifstream in(FileNames::COURSES);
-	if (!in.is_open())
-	{
-		throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
-	};
+	if (!in.is_open()) return;
 
 	char buffer[1024];
 	while (in.getline(buffer, 1024))
@@ -130,10 +126,7 @@ void DataHandler::loadAssignments(MyVector<Course>& courses)
 {
 	std::ifstream in(FileNames::ASSIGNMENTS);
 
-	if (!in.is_open())
-	{
-		throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
-	}
+	if (!in.is_open()) return;
 
 	char buffer[1024];
 	while (in.getline(buffer, 1024))
