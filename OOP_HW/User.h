@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 #include "MyString.hpp"
 #include "MyVector.hpp"
@@ -39,7 +40,7 @@ public:
 	void clearMailBox();
 
 	UserRole getRole() const;
-	virtual const MyString& getRoleString() const;
+	virtual const char* getRoleString() const;
 
 	virtual User* clone() const = 0;
 

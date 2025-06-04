@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 #include <iostream>
 #include <fstream>
@@ -21,13 +22,25 @@ void DataHandler::loadCourses(MyVector<Course>& courses, const MyVector<User*>& 
 		MyString password = tokens[2];
 		int teacherId = tokens[3].toInt();
 
+		MyVector<Student*> fillStudents;
+
 		Teacher* teacher = nullptr;
 		for (size_t i = 0; i < users.size(); ++i)
 		{
 			if (users[i]->getId() == teacherId && users[i]->getRole() == UserRole::Teacher)
 			{
 				teacher = dynamic_cast<Teacher*>(users[i]);
-				break;
+			}
+			else if (users[i]->getRole() == UserRole::Student)
+			{
+				Student* st = dynamic_cast<Student*>(users[i]);
+				for (size_t j = 0; j < st->courseIds.size(); j++)
+				{
+					if (st->hasCourseId(id))
+					{
+						fillStudents.push(st);
+					}
+				}
 			}
 		}
 
@@ -37,6 +50,12 @@ void DataHandler::loadCourses(MyVector<Course>& courses, const MyVector<User*>& 
 		}
 
 		Course course(id, name, teacher, password);
+
+		for (size_t i = 0; i < fillStudents.size(); i++)
+		{
+			course.addStudent(fillStudents[i]);
+		}
+
 		courses.push(course);
 	}
 
@@ -46,11 +65,12 @@ void DataHandler::loadUsers(MyVector<User*>& users)
 {
 	std::ifstream in(FileNames::USERS);
 	bool adminExists = false;
-	
+
 	if (!in.is_open())
 	{
 		users.push(new Admin(0, "System", "Admin", "00000"));
-		saveUsers(users); 
+		saveUsers(users);
+		adminExists = true;
 		return;
 	}
 
@@ -68,17 +88,35 @@ void DataHandler::loadUsers(MyVector<User*>& users)
 		int roleInt = tokens[4].toInt();
 		UserRole role = static_cast<UserRole>(roleInt);
 
+		MyVector<int> ids;
+		if (role == UserRole::Student)
+		{
+			MyString opt = tokens[5];
+			if (opt.length() > 0)
+			{
+				for (size_t i = 0; i < opt.split(GeneralConstants::ID_SEPERATOR).size(); i++)
+				{
+					ids.push(opt.split(GeneralConstants::ID_SEPERATOR)[i].toInt());
+				}
+			}
+		}
+
 		User* user = nullptr;
 		switch (role)
 		{
 			case UserRole::Student:
+			{
 				user = new Student(id, firstName, lastName, password);
+				Student* st = dynamic_cast<Student*>(user);
+				st->courseIds = ids;
 				break;
+			}
 			case UserRole::Teacher:
 				user = new Teacher(id, firstName, lastName, password);
 				break;
 			case UserRole::Admin:
 				user = new Admin(id, firstName, lastName, password);
+				adminExists = true;
 				break;
 			default:
 				throw std::runtime_error(ErrorMessages::USER_NOT_FOUND);
@@ -91,7 +129,7 @@ void DataHandler::loadUsers(MyVector<User*>& users)
 
 	if (!adminExists)
 	{
-		users.push(new Admin(0, "System", "Admin", "0000"));
+		users.push(new Admin(0, "System", "Admin", "00000"));
 		saveUsers(users);
 	}
 }
@@ -143,7 +181,7 @@ void DataHandler::loadAssignments(MyVector<Course>& courses)
 		Assignment a(id, courseId, title);
 		for (size_t i = 0; i < courses.size(); i++)
 		{
-			if (courses[i].getId() == id)
+			if (courses[i].getId() == courseId)
 			{
 				courses[i].addAssignment(a);
 			}
@@ -161,12 +199,13 @@ void DataHandler::loadSubmissions(MyVector<Course>& courses)
 	{
 		MyString line(buffer);
 		MyVector<MyString> tokens = line.split(GeneralConstants::DELIMETER);
-		if (tokens.size() < 4) continue;
+		if (tokens.size() < 5) continue;
 
 		int assignmentId = tokens[0].toInt();
 		int studentId = tokens[1].toInt();
 		double grade = tokens[2].toDouble();
 		MyString solution = tokens[3];
+		MyString comment = tokens[4];
 
 		Assignment* targetAssignment = nullptr;
 
@@ -187,6 +226,7 @@ void DataHandler::loadSubmissions(MyVector<Course>& courses)
 
 		Submission sub(studentId, solution, assignmentId);
 		sub.setGrade(grade);
+		sub.setComment(comment);
 
 		targetAssignment->addSubmission(sub);
 	}
@@ -196,7 +236,7 @@ void DataHandler::loadSubmissions(MyVector<Course>& courses)
 
 void DataHandler::saveCourses(const MyVector<Course>& courses)
 {
-	std::ofstream out(FileNames::COURSES);
+	std::ofstream out(FileNames::COURSES, std::ios::trunc);
 	if (!out.is_open())
 	{
 		throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
@@ -215,7 +255,7 @@ void DataHandler::saveCourses(const MyVector<Course>& courses)
 }
 void DataHandler::saveUsers(const MyVector<User*>& users)
 {
-	std::ofstream out(FileNames::USERS);
+	std::ofstream out(FileNames::USERS, std::ios::trunc);
 	if (!out.is_open())
 	{
 		throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
@@ -223,21 +263,36 @@ void DataHandler::saveUsers(const MyVector<User*>& users)
 
 	for (size_t i = 0; i < users.size(); i++)
 	{
-		const User* user = users[i];
+		User* user = users[i];
 		out << user->getId() << GeneralConstants::DELIMETER
 			<< user->getFirstName() << GeneralConstants::DELIMETER
 			<< user->getLastName() << GeneralConstants::DELIMETER
 			<< user->getPassword() << GeneralConstants::DELIMETER
-			<< static_cast<int>(user->getRole()) << '\n';
+			<< static_cast<int>(user->getRole());
+
+		if (user->getRole() == UserRole::Student)
+		{
+			out << GeneralConstants::DELIMETER << GeneralConstants::ID_SEPERATOR;
+			Student* st = dynamic_cast<Student*>(user);
+			for (size_t j = 0; j < st->courseIds.size(); j++)
+			{
+				out << st->courseIds[j];
+				if (j != st->courseIds.size() - 1)
+				{
+					out << GeneralConstants::ID_SEPERATOR;
+				}
+			}
+		}
+		out << "\n";
 	}
 
 	out.close();
 }
 void DataHandler::saveMessages(const MyVector<Message>& allMessages)
 {
-	std::ofstream out(FileNames::MESSAGES);
+	std::ofstream out(FileNames::MESSAGES, std::ios::trunc);
 
-	for (size_t i = 0; i < allMessages.getCapacity(); ++i)
+	for (size_t i = 0; i < allMessages.size(); ++i)
 	{
 		const Message& msg = allMessages[i];
 		out << msg.getSenderID() << GeneralConstants::DELIMETER
@@ -251,7 +306,7 @@ void DataHandler::saveMessages(const MyVector<Message>& allMessages)
 }
 void DataHandler::saveAssignments(const MyVector<Course>& courses)
 {
-	std::ofstream out(FileNames::ASSIGNMENTS);
+	std::ofstream out(FileNames::ASSIGNMENTS, std::ios::trunc);
 
 	for (size_t i = 0; i < courses.size(); ++i)
 	{
@@ -261,14 +316,14 @@ void DataHandler::saveAssignments(const MyVector<Course>& courses)
 			const Assignment& a = course.getAssignments()[j];
 			out << a.getId() << GeneralConstants::DELIMETER
 				<< a.getCourseID() << GeneralConstants::DELIMETER
-				<< a.getTtile().c_str() << '\n';
+				<< a.getTitle() << '\n';
 		}
 	}
 	out.close();
 }
 void DataHandler::saveSubmissions(const MyVector<Course>& courses)
 {
-	std::ofstream out(FileNames::SUBMISSIONS);
+	std::ofstream out(FileNames::SUBMISSIONS, std::ios::trunc);
 	if (!out.is_open())
 	{
 		throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
@@ -289,7 +344,8 @@ void DataHandler::saveSubmissions(const MyVector<Course>& courses)
 				out << sub.getAssignmentId() << GeneralConstants::DELIMETER
 					<< sub.getStudentId() << GeneralConstants::DELIMETER
 					<< sub.getGrade() << GeneralConstants::DELIMETER
-					<< sub.getSolution().c_str() << '\n';
+					<< sub.getSolution().c_str() << GeneralConstants::DELIMETER
+					<< sub.getComment() << '\n';
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 #include <iostream>
 #include "OutputMessages.h"
@@ -54,15 +55,6 @@ void MyVector<T>::moveFrom(MyVector&& other)
 template<class T>
 void MyVector<T>::free()
 {
-	if constexpr (std::is_pointer_v<T>)
-	{
-		for (size_t i = 0; i < current; i++)
-		{
-			delete data[i]; 
-			data[i] = nullptr; 
-		}
-	}
-
 	delete[] data; 
 	data = nullptr;
 

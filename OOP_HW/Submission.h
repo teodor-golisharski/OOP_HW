@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 #include "MyString.hpp"
 #include "MyVector.hpp"
@@ -24,5 +25,6 @@ public:
 	double getGrade() const;
 	const MyString& getSolution() const; 
 	int getAssignmentId() const;
+	const MyString& getComment() const;
 };
 

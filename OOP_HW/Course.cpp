@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #include "Course.h"
 #include "Utilities.h"
 
@@ -9,6 +10,18 @@ void Course::addAssignment(const Assignment& a)
 void Course::addStudent(Student* user)
 {
     students.push(user);
+}
+
+bool Course::hasStudent(int studentId) const
+{
+    for (size_t i = 0; i < students.size(); i++)
+    {
+        if (students[i]->getId() == studentId)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 Course::Course(int id, const MyString& name, Teacher* teacher, const MyString& enrollmentPassword)
@@ -62,7 +75,7 @@ Assignment* Course::findAssignmentByName(const MyString& name)
 {
     for (size_t i = 0; i < assignments.size(); ++i)
     {
-        if (assignments[i].getTtile() == name)
+        if (assignments[i].getTitle() == name)
             return &assignments[i];
     }
     return nullptr;

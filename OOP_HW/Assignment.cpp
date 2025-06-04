@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #include "Assignment.h"
 #include "OutputMessages.h"
 #include "Utilities.h"
@@ -10,7 +11,7 @@ Assignment::Assignment(int id, int courseID, const MyString& title)
     {
         throw std::invalid_argument(ErrorMessages::EMPTY_ASSIGNMENT_TITLE);
     }
-    this->title;
+    this->title = title;
     this->id = id;
     this->courseId = courseID;
 }
@@ -25,7 +26,7 @@ int Assignment::getCourseID() const
     return this->courseId;
 }
 
-const MyString& Assignment::getTtile() const
+const MyString& Assignment::getTitle() const
 {
     return this->title;
 }
@@ -35,16 +36,30 @@ const MyVector<Submission>& Assignment::getSubmissions() const
     return this->submissions;
 }
 
-Submission& Assignment::findSubmission(int studentId)
+
+Submission* Assignment::findSubmission(int studentId)
 {
-    for (size_t i = 0; i < submissions.getCapacity(); i++)
+    for (size_t i = 0; i < submissions.size(); i++)
     {
         if (submissions[i].getStudentId() == studentId)
         {
-            return submissions[i];
+            return &submissions[i];
         }
     }
-    throw std::invalid_argument(ErrorMessages::GENERAL_ERROR);
+    return nullptr;
+}
+
+bool Assignment::hasSubmitted(int studentId) const
+{
+    for (size_t i = 0; i < submissions.size(); i++)
+    {
+        if (submissions[i].getStudentId() == studentId)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Assignment::addSubmission(const Submission& sub)

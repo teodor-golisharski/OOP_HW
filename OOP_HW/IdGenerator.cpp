@@ -1,46 +1,44 @@
+// Teodor Golisharski 6MI0600367
 #include "IdGenerator.h"
 
 int IdGenerator::nextUser()
 {
-    return nextUserId++;
+	return nextUserId++;
 }
 
 int IdGenerator::nextCourse()
 {
-    return nextCourseId++;
+	return nextCourseId++;
 }
 
 int IdGenerator::nextAssignment()
 {
-    return nextAssignmentId++;
+	return nextAssignmentId++;
 }
 
 void IdGenerator::loadFromFile()
 {
-    std::ifstream in(FileNames::ID_GENERATOR);
-    if (!in.is_open())
-    {
-        throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
-    }
+	std::ifstream in(FileNames::ID_GENERATOR);
+	if (!in.is_open()) return;
 
-    in >> nextUserId;
-    in >> nextCourseId;
-    in >> nextAssignmentId;
+	in >> nextUserId;
+	in >> nextCourseId;
+	in >> nextAssignmentId;
 
-    in.close();
+	in.close();
 }
 
 void IdGenerator::saveToFile() const
 {
-    std::ofstream out(FileNames::ID_GENERATOR);
-    if (!out.is_open())
-    {
-        throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
-    }
+	std::ofstream out(FileNames::ID_GENERATOR);
+	if (!out.is_open())
+	{
+		throw std::runtime_error(ErrorMessages::FILE_NOT_FOUND);
+	}
 
-    out << nextUserId << '\n'
-        << nextCourseId << '\n'
-        << nextAssignmentId << '\n';
+	out << nextUserId << '\n'
+		<< nextCourseId << '\n'
+		<< nextAssignmentId << '\n';
 
-    out.close();
+	out.close();
 }

@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 
 namespace FileNames
@@ -12,6 +13,8 @@ namespace FileNames
 
 namespace GeneralConstants
 {
+	static const char ID_SEPERATOR = ',';
 	static const char DELIMETER = '|';
-	static int NAME_MIN_LENGTH = 2;
+	static const int NAME_MIN_LENGTH = 2;
+	static const int BUFFER_SIZE = 1024;
 }

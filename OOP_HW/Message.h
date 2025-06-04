@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 #include "MyString.hpp"
 
@@ -10,8 +11,7 @@ private:
     MyString timestamp; 
     bool isDeleted;
 
-    const MyString& getCurrentTime();
-
+    MyString getCurrentTime();
 public:
     Message();
     Message(int senderID, int recipientID, const MyString& content);

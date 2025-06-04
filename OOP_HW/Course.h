@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 #include "Teacher.h"
 #include "Student.h"
@@ -17,10 +18,10 @@ private:
 
     void addAssignment(const Assignment& a);
     void addStudent(Student* user);
+    bool hasStudent(int studentId) const;
 
     friend class DataHandler;
     friend class SystemManager;
-
 public:
     Course() = default;
     Course(int id, const MyString& name, Teacher* teacher, const MyString& enrollmentPassword);

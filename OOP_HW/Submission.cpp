@@ -1,10 +1,11 @@
+// Teodor Golisharski 6MI0600367
 #include "Submission.h"
 #include "OutputMessages.h"
 #include "Utilities.h"
 
 void Submission::checkGrade(double grade) const
 {
-	if (grade < 2 || grade > 6)
+	if (grade < 0 || grade > 6)
 	{
 		throw std::invalid_argument(ErrorMessages::INVALID_GRADE);
 	}
@@ -24,11 +25,11 @@ void Submission::setComment(const MyString& comment)
 	this->comment = comment;
 }
 
-Submission::Submission() : studentId(-1), solution(""), assignmentId(-1), grade(0)
+Submission::Submission() : studentId(-1), solution(" - "), assignmentId(-1), grade(0), comment("not graded")
 {
 }
 
-Submission::Submission(int studentId, const MyString& solution, int assignmentId)
+Submission::Submission(int studentId, const MyString& solution, int assignmentId) : Submission()
 {
 	this->studentId = studentId;
 	if (!validateString(solution))
@@ -37,12 +38,11 @@ Submission::Submission(int studentId, const MyString& solution, int assignmentId
 	}
 	this->solution = solution;
 	this->assignmentId = assignmentId;
-	this->grade = 0;
 }
 
 int Submission::getStudentId() const
 {
-	return studentId;
+	return this->studentId;
 }
 double Submission::getGrade() const
 {
@@ -56,5 +56,10 @@ const MyString& Submission::getSolution() const
 int Submission::getAssignmentId() const
 {
 	return this->assignmentId;
+}
+
+const MyString& Submission::getComment() const
+{
+	return this->comment;
 }
 

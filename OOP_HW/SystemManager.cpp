@@ -1,13 +1,34 @@
+// Teodor Golisharski 6MI0600367
 #include "SystemManager.h"
+
+void SystemManager::removeTeacherFromCourses(int id)
+{
+	for (size_t i = 0; i < courses.size(); i++)
+	{
+		if (courses[i].getTeacher()->getId() == id)
+		{
+			courses[i].teacher = nullptr;
+		}
+	}
+}
 
 void SystemManager::free()
 {
-	for (size_t i = 0; i < users.size(); i++)
+	for (size_t i = 0; i < courses.size(); i++)
+	{
+		courses[i].teacher = nullptr;
+		for (size_t j = 0; j < courses[i].students.size(); j++)
+		{
+			courses[i].students[j] = nullptr;
+		};
+	}
+	for (size_t i = 0; i < users.size(); ++i)
 	{
 		delete users[i];
+		users[i] = nullptr;
 	}
-
 	users.clear();
+	currentUser = nullptr;
 }
 bool SystemManager::isCourseUnique(const MyString& name) const
 {
@@ -70,7 +91,6 @@ void SystemManager::help() const
 			<< " - delete_user <id>\n"
 			<< " - message_all <message>\n"
 			<< " - mailbox\n"
-			<< " - clear_mailbox\n"
 			<< " - message <id> <message>\n";
 	}
 	else if (hasRole(UserRole::Teacher))
@@ -82,7 +102,6 @@ void SystemManager::help() const
 			<< " - view_assignment_submissions <CourseName> <AssignmentName>\n"
 			<< " - grade_assignment <CourseName> <AssignmentName> <studentID> <grade> <feedback>\n"
 			<< " - message_students <CourseName> <message>\n"
-			<< " - message <id> <message>\n"
 			<< " - mailbox\n"
 			<< " - clear_mailbox\n";
 	}
@@ -131,43 +150,82 @@ void SystemManager::logout()
 	{
 		throw std::runtime_error(ErrorMessages::NOT_LOGGED_IN);
 	}
+	saveData();
 	currentUser = nullptr;
 }
-bool SystemManager::exit()
+void SystemManager::exit()
 {
-	logout();
-	saveData();
-	free();
-	return true;
+	currentUser = nullptr;
 }
 
+void SystemManager::deleteUser(int userId)
+{
+	User* us = findUser(userId);
+	if (!us)
+	{
+		throw std::invalid_argument(ErrorMessages::USER_NOT_FOUND);
+	}
+	if (us->getRole() == UserRole::Admin)
+	{
+		throw std::invalid_argument(ErrorMessages::ACCESS_DENIED);
+	}
+
+	std::cout << currentUser->getFirstName() << " " << currentUser->getLastName() << " | " << currentUser->getRoleString() << " | " << currentUser->getId() << std::endl;
+	std::cout << InformativeMessages::TYPE_TO_DELETE << std::endl;
+
+	MyString ans;
+	std::cin >> ans;
+
+	if (ans == "yes")
+	{
+		for (size_t i = 0; i < users.size(); i++)
+		{
+			if (users[i]->getId() == userId)
+			{
+				if (us->getRole() == UserRole::Teacher)
+				{
+					removeTeacherFromCourses(userId);
+				}
+
+				users.deleteAt(i);
+				break;
+			}
+		}
+	}
+}
 
 void SystemManager::addUser(UserRole role, const MyString& firstName, const MyString& lastName, const MyString& password)
 {
-	User* user;
+	User* user = nullptr;
 	switch (role)
 	{
-		case UserRole::Student: user = new Student(idGen.nextUser(), firstName, lastName, password);
-		case UserRole::Teacher: user = new Teacher(idGen.nextUser(), firstName, lastName, password);
+		case UserRole::Student: user = new Student(idGen.nextUser(), firstName, lastName, password); break;
+		case UserRole::Teacher: user = new Teacher(idGen.nextUser(), firstName, lastName, password); break;
 
 		default: throw std::runtime_error(ErrorMessages::FAILED_CREATING_USER);
 	}
-	sendMessage(currentUser->getId(), user->getId(), "Account created. Your password is: " + password);
+	users.push(user->clone());
+	sendMessage(user->getId(), "Account created. Your password is: " + password);
 
 	std::cout << "Added " << user->getRoleString() << " " << firstName << " " << lastName << " with ID " << user->getId() << "!" << std::endl;
 }
-void SystemManager::sendMessage(int senderId, int recipientId, const MyString& content)
+void SystemManager::sendMessage(int recipientId, const MyString& content)
 {
-	Message m(senderId, recipientId, content);
+	User* rec = findUser(recipientId);
+	if (!rec)
+	{
+		throw std::invalid_argument(ErrorMessages::USER_NOT_FOUND);
+	}
+	Message m(currentUser->getId(), recipientId, content);
 	allMessages.push(m);
 }
 void SystemManager::messageAll(const MyString& content)
 {
 	for (size_t i = 0; i < users.size(); i++)
 	{
-		if (users[i])
+		if (users[i] && users[i]->getId() != currentUser->getId())
 		{
-			sendMessage(currentUser->getId(), users[i]->getId(), content);
+			sendMessage(users[i]->getId(), content);
 		}
 	}
 }
@@ -210,8 +268,19 @@ void SystemManager::addToCourse(const MyString& courseName, int studentId)
 		throw std::invalid_argument(ErrorMessages::ONLY_STUDENTS);
 	}
 
+	if (tmp->hasStudent(tempUser->getId()))
+	{
+		throw std::invalid_argument(ErrorMessages::USER_ALREADY_ADDED);
+	}
 	Student* s = dynamic_cast<Student*>(tempUser);
+	
 	tmp->addStudent(s);
+	s->addId(tmp->getId());
+
+	Message mess(currentUser->getId(), s->getId(), "You are added to " + tmp->getName());
+	allMessages.push(mess);
+
+	std::cout << SuccessMessages::STUDENT_ADDED << std::endl;
 }
 void SystemManager::mailbox() const
 {
@@ -242,10 +311,12 @@ void SystemManager::enroll(const MyString& courseName, const MyString& password)
 	{
 		throw std::invalid_argument(ErrorMessages::WRONG_PASSWORD);
 	}
-	tmp->addStudent(dynamic_cast<Student*>(currentUser));
+	Student* st = dynamic_cast<Student*>(currentUser);
+	tmp->addStudent(st);
+	st->addId(tmp->getId());
+
 	std::cout << "Successfully enrolled in " << tmp->getName() << "!" << std::endl;
 }
-
 void SystemManager::assignHomework(const MyString& courseName, const MyString& assignmentName)
 {
 	Course* tmp = findCourse(courseName);
@@ -276,10 +347,9 @@ void SystemManager::messageStudents(const MyString& courseName, const MyString& 
 	}
 	for (size_t i = 0; i < tmp->students.size(); i++)
 	{
-		sendMessage(currentUser->getId(), tmp->students[i]->getId(), content);
+		sendMessage(tmp->students[i]->getId(), content);
 	}
 }
-
 void SystemManager::submitAssignment(const MyString& courseName, const MyString& assignmentName, const MyString& content)
 {
 	Course* tmp = findCourse(courseName);
@@ -292,12 +362,18 @@ void SystemManager::submitAssignment(const MyString& courseName, const MyString&
 		if (tmp->students[i]->getId() == currentUser->getId())
 		{
 			Assignment* as = tmp->findAssignmentByName(assignmentName);
+			std::cout << as->getTitle() << std::endl;
 			if (!as)
 			{
 				throw std::invalid_argument(ErrorMessages::ASSIGNMENT_NOT_FOUND);
 			}
+			if (as->hasSubmitted(currentUser->getId()))
+			{
+				throw std::runtime_error(InformativeMessages::SUBMISSION_REGISTERED);
+			}
 			Submission sub(currentUser->getId(), content, as->getId());
 			as->addSubmission(sub);
+			break;
 		}
 	}
 }
@@ -308,38 +384,48 @@ void SystemManager::viewAssignmentSubmissions(const MyString& courseName, const 
 	{
 		throw std::invalid_argument(ErrorMessages::COURSE_NOT_FOUND);
 	}
-	for (size_t i = 0; i < tmp->students.size(); i++)
+
+	Assignment* as = tmp->findAssignmentByName(assignmentName);
+	if (!as)
 	{
-		if (tmp->students[i]->getId() == currentUser->getId())
+		throw std::invalid_argument(ErrorMessages::ASSIGNMENT_NOT_FOUND);
+	}
+
+	const MyVector<Submission>& subs = as->getSubmissions();
+
+	if (as->getSubmissions().size() == 0)
+	{
+		std::cout << InformativeMessages::NO_SUBMISSIONS << std::endl;
+	}
+
+	for (size_t j = 0; j < subs.size(); j++)
+	{
+		User* student = findUser(subs[j].getStudentId());
+
+		if (student)
 		{
-			Assignment* as = tmp->findAssignmentByName(assignmentName);
-			if (!as)
+			std::cout << "    " << student->getFirstName() << " " << student->getLastName()
+				<< ", " << student->getId() << ": " << subs[j].getSolution();
+
+			if (subs[j].getGrade() != 0)
 			{
-				throw std::invalid_argument(ErrorMessages::ASSIGNMENT_NOT_FOUND);
+				std::cout << " Graded: " << subs[j].getGrade() << std::endl;
 			}
-			if (as->getSubmissions().size() == 0)
+			else
 			{
-				std::cout << InformativeMessages::NO_SUBMISSIONS << std::endl;
-			}
-			for (size_t i = 0; i < as->getSubmissions().size(); i++)
-			{
-				User* student = findUser(as->getSubmissions()[i].getStudentId());
-				std::cout << "	" << student->getFirstName() << " " << student->getLastName() << ", " << student->getId() << ": " << as->getSubmissions()[i].getSolution();
-				if (as->getSubmissions()[i].getGrade() != 0)
-				{
-					std::cout << "	Graded: " << as->getSubmissions()[i].getGrade() << std::endl;
-				}
-				else
-				{
-					std::cout << InformativeMessages::NOT_GRADED << std::endl;
-				}
+				std::cout << InformativeMessages::NOT_GRADED << std::endl;
 			}
 		}
 	}
-
 }
 void SystemManager::gradeAssignment(const MyString& courseName, const MyString& assignmentName, int studentId, double grade, const MyString& comment)
 {
+	User* user = findUser(studentId);
+	if (!user)
+	{
+		throw std::invalid_argument(ErrorMessages::USER_NOT_FOUND);
+	}
+
 	Course* tmp = findCourse(courseName);
 	if (!tmp)
 	{
@@ -347,26 +433,47 @@ void SystemManager::gradeAssignment(const MyString& courseName, const MyString& 
 	}
 	for (size_t i = 0; i < tmp->students.size(); i++)
 	{
-		if (tmp->students[i]->getId() == currentUser->getId())
+		Assignment* as = tmp->findAssignmentByName(assignmentName);
+		if (!as)
 		{
-			Assignment* as = tmp->findAssignmentByName(assignmentName);
-			if (!as)
-			{
-				throw std::invalid_argument(ErrorMessages::ASSIGNMENT_NOT_FOUND);
-			}
-			as->findSubmission(studentId).setComment(comment);
-			as->findSubmission(studentId).setGrade(grade);
-
-			return;
+			throw std::invalid_argument(ErrorMessages::ASSIGNMENT_NOT_FOUND);
 		}
+		Submission* s = as->findSubmission(studentId);
+		if (!s)
+		{
+			throw std::invalid_argument(ErrorMessages::USER_NO_SUBMISSION);
+		}
+		s->setComment(comment);
+		s->setGrade(grade);
+
+		return;
 	}
 }
-
 void SystemManager::grades() const
 {
-
+	bool foundAny = false;
+	for (size_t i = 0; i < courses.size(); i++)
+	{
+		if (courses[i].hasStudent(currentUser->getId()))
+		{
+			Course& tmp = courses[i];
+			for (size_t j = 0; j < tmp.getAssignments().size(); j++)
+			{
+				Assignment* as = &tmp.getAssignments()[j];
+				Submission* sub = as->findSubmission(currentUser->getId());
+				if (sub)
+				{
+					foundAny = true;
+					std::cout << "	" << tmp.getName() << " | " << as->getTitle() << " | " << sub->getGrade() << " | " << sub->getComment() << std::endl;
+				}
+			}
+		}
+	}
+	if (!foundAny)
+	{
+		std::cout << InformativeMessages::NO_GRADES << std::endl;
+	}
 }
-
 void SystemManager::clearMailbox()
 {
 	for (size_t i = 0; i < allMessages.size(); i++)
@@ -378,11 +485,35 @@ void SystemManager::clearMailbox()
 	}
 }
 
+void SystemManager::viewMailBox(int userId) const
+{
+	User* targetUser = findUser(userId);
+	if (!targetUser)
+	{
+		throw std::invalid_argument(ErrorMessages::USER_NOT_FOUND);
+	}
 
-
+	bool foundAny = false;
+	for (size_t i = 0; i < allMessages.size(); i++)
+	{
+		if (allMessages[i].getRecipientID() == userId)
+		{
+			foundAny = true;
+			int senderId = allMessages[i].getSenderID();
+			User* sender = findUser(senderId);
+			MyString status = (allMessages[i].getIsDeleted() ? "	(Deleted) " : "	");
+			std::cout << status << allMessages[i].getTimeStamp() << ", sent by " << sender->getFirstName() << " " << sender->getLastName() << ": " << allMessages[i].getContent() << std::endl;
+		}
+	}
+	if (!foundAny)
+	{
+		std::cout << "	" << InformativeMessages::EMPTY_MAILBOX << std::endl;
+	}
+}
 
 void SystemManager::loadData()
 {
+	idGen.loadFromFile();
 	DataHandler::loadMessages(allMessages);
 	DataHandler::loadUsers(users);
 	DataHandler::loadCourses(courses, users);
@@ -391,6 +522,7 @@ void SystemManager::loadData()
 }
 void SystemManager::saveData() const
 {
+	idGen.saveToFile();
 	DataHandler::saveUsers(users);
 	DataHandler::saveCourses(courses);
 	DataHandler::saveMessages(allMessages);
@@ -401,4 +533,3 @@ bool SystemManager::hasRole(UserRole requiredRole) const
 {
 	return currentUser->getRole() == requiredRole;
 }
-

@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #include "Admin.h"
 
 Admin::Admin(int id, const MyString& firstName, const MyString& lastName, const MyString& password)
@@ -11,7 +12,7 @@ User* Admin::clone() const
     return new Admin(*this);
 }
 
-const MyString& Admin::getRoleString() const
+const char* Admin::getRoleString() const
 {
     return "Admin";
 }

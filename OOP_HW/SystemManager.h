@@ -1,10 +1,11 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
-#include "MyVector.hpp";
-#include "MyString.hpp";
+#include "MyVector.hpp"
+#include "MyString.hpp"
 #include "OutputMessages.h"
 #include "DataHandler.h"
 #include "User.h"
-#include "Course.h";
+#include "Course.h"
 #include "Message.h"
 #include "IdGenerator.h"
 
@@ -19,6 +20,8 @@ private:
 
 	IdGenerator idGen;
 
+
+	void removeTeacherFromCourses(int id);
 	void free();
 	bool isCourseUnique(const MyString& name) const;
 	Course* findCourse(const MyString& name) const;
@@ -29,9 +32,11 @@ public:
 
 	void login(int id, const MyString& password);
 	void logout();
-	bool exit();
+	void exit();
+
+	void deleteUser(int userId);
 	void addUser(UserRole role, const MyString& firstName, const MyString& lastName, const MyString& password);
-	void sendMessage(int senderId, int recipientId, const MyString& content);
+	void sendMessage(int recipientId, const MyString& content);
 	void messageAll(const MyString& content);
 	void changePassword(const MyString& oldPassword, const MyString& newPassword);
 	void createCourse(const MyString& courseName, const MyString& pass);
@@ -45,7 +50,7 @@ public:
 	void gradeAssignment(const MyString& courseName, const MyString& assignmentName, int studentId, double grade, const MyString& comment);
 	void grades() const;
 	void clearMailbox();
-
+	void viewMailBox(int userId) const;
 
 	void help() const;
 	void loadData();

@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #pragma once
 #include "ApplicationConstants.h"
 
@@ -28,15 +29,22 @@ namespace ErrorMessages
 	static const char* const COURSE_NOT_FOUND = "Course not found.";
 	static const char* const ASSIGNMENT_NOT_FOUND = "Assignment not found.";
 	static const char* const ONLY_STUDENTS = "Only students can be added to the course.";
+	static const char* const USER_NO_SUBMISSION = "Not submissioned by this student.";
+	static const char* const USER_ALREADY_ADDED = "User is already added to the course.";
 }
 
 namespace InformativeMessages
 {
 	static const char* const NAMING_RULES = "Name must be at least 2 symbols and cannot contains certain special symbols.";
 	static const char* const PASSWORD_RULES = "Password cannot contains certain special symbols.";
+	static const char* const CONTENT_RULES = "Content must be at least 2 symbols and cannot contains certain special symbols.";
 	static const char* const EMPTY_MAILBOX = "No messages to show!";
 	static const char* const NO_SUBMISSIONS = "No submissions to this assignment.";
 	static const char* const NOT_GRADED = "Not graded yet.";
+	static const char* const SUBMISSION_REGISTERED = "You have already submitted.";
+	static const char* const NO_GRADES = "No grades.";
+	static const char* const INVALID_COMMAND = "Invalid command!";
+	static const char* const TYPE_TO_DELETE = "Type 'yes' to delete the user above.";
 }
 
 namespace SuccessMessages
@@ -44,5 +52,5 @@ namespace SuccessMessages
 	static const char* const LOGIN_SUCCESSFUL = "Login successful!";
 	static const char* const PASSWORD_CHANGE = "Password changed successfully!";
 	static const char* const NEW_ASSIGNMENT = "Successfully created a new assignment!";
-
+	static const char* const STUDENT_ADDED = "New student added successfully to the course.";
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "MyString.hpp"
 #include "MyVector.hpp"
+// Teodor Golisharski 6MI0600367
 #include "Submission.h"
 
 class Assignment
@@ -11,6 +12,8 @@ class Assignment
 	MyVector<Submission> submissions;
 
 	const MyVector<Submission>& getSubmissions() const;
+	Submission* findSubmission(int studentId);
+	bool hasSubmitted(int studentId) const;
 
 	friend class SystemManager;
 	friend class DataHandler;
@@ -20,9 +23,8 @@ public:
 
 	int getId() const;
 	int getCourseID() const;
-	const MyString& getTtile() const;
+	const MyString& getTitle() const;
 
-	Submission& findSubmission(int studentId);
 	void addSubmission(const Submission& sub);
 };
 

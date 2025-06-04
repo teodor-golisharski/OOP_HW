@@ -1,3 +1,4 @@
+// Teodor Golisharski 6MI0600367
 #include "User.h"
 
 void User::changePassword(const MyString& oldPass, const MyString& newPass)
@@ -64,7 +65,7 @@ UserRole User::getRole() const
 	return this->role;
 }
 
-const MyString& User::getRoleString() const
+const char* User::getRoleString() const
 {
 	return "Default";
 }
